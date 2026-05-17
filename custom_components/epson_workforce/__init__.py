@@ -1,38 +1,30 @@
-"""The epson_workforce component."""
-
+"""Epson WorkForce/XP extended integration for Home Assistant."""
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant
 
-from .api import EpsonWorkForceAPI
+from .const import DOMAIN, DEFAULT_PORT
+from .coordinator import EpsonCoordinator
 
-DOMAIN = "epson_workforce"
-PLATFORMS: list[Platform] = [Platform.SENSOR]
+PLATFORMS = [Platform.SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Epson WorkForce from a config entry."""
+    host = entry.data[CONF_HOST]
+    port = entry.data.get(CONF_PORT, DEFAULT_PORT)
 
-    # Store the API instance in hass.data for the sensor platform to use
-    def create_api(_: None = None) -> EpsonWorkForceAPI:
-        return EpsonWorkForceAPI(entry.data["host"], entry.data["path"])
+    coordinator = EpsonCoordinator(hass, host, port)
+    await coordinator.async_config_entry_first_refresh()
 
-    api = await hass.async_add_executor_job(create_api)
-
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = api
-
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload a config entry."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
-
     return unload_ok
