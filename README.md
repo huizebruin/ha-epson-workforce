@@ -71,6 +71,9 @@ The integration automatically detects and creates sensors for:
 * **Ink Levels**: Black, Photo Black, Cyan, Magenta, Yellow, Light Cyan, Light Magenta
 * **Maintenance**: Cleaning cartridge level
 * **Status**: Overall printer status
+* **Usage**: Total pages printed, B&W pages, color pages, B&W scans, color scans, first print date
+* **Network**: WiFi speed, channel, mode, security type
+* **Hardware**: Scanner status, WiFi hardware status
 
 > [!NOTE]
 > Only sensors available on your specific printer model will be created. The integration queries your printer and only adds sensors for cartridges that are detected.
@@ -80,6 +83,14 @@ Example sensor names:
 * `sensor.epson123456_printer_status`
 * `sensor.epson123456_cleaning_level`
 * `sensor.epson123456_wifi_network`
+
+**Sensors**
+
+![Sensors](https://github.com/user-attachments/assets/76256806-c6bb-4360-b6b6-1352602800ea)
+
+**Diagnostic sensors**
+
+![Diagnostic sensors](https://github.com/user-attachments/assets/8389c826-5ac5-438a-9f47-393c610ee98e)
 
 ## Troubleshooting
 
